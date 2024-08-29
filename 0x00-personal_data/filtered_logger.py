@@ -5,8 +5,11 @@ import re
 from typing import List
 
 
-def filter_datum(f: List[str], r: str, m: str, s: str) -> str:
-    """ Doc for function """
-    return re.sub(f"({'|'.join(f)})=[^{s}]*",
-                  lambda m: m.group(0).split('=')[0] + f"={r}",
-                  m)
+def filter_datum(
+    fields: List[str], redaction: str, message: str, separator: str
+) -> str:
+    """doc for function"""
+    for field in fields:
+        regex = f"{field}=[^{separator}]*"
+        message = re.sub(regex, f"{field}={redaction}", message)
+    return message
