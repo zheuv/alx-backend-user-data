@@ -31,3 +31,17 @@ class RedactingFormatter(logging.Formatter):
         # in order to avoid recursion
         org = super().format(record)
         return filter_datum(self.fields, self.REDACTION, org, self.SEPARATOR)
+
+
+PII_FIELDS = ("name", "email", "phone", "ssn", "password")
+
+
+def get_logger() -> logging.Logger:
+    """ create a Logger and a StreamHandler """
+    log = logging.getLogger("user_data")
+    log.setLevel(logging.INFO)
+    log.propagate = False
+    sh = logging.StreamHandler()
+    sh.setFormatter(RedactingFormatter(PII_FIELDS))
+    log.addHandler(sh)
+    return log
